@@ -7,6 +7,7 @@ from dateutil.relativedelta import relativedelta
 
 from typing import Optional
 
+
 class Movie(BaseModel):
     id: int
     name: str

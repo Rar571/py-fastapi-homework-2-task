@@ -507,11 +507,11 @@ async def test_update_movie_success(client, db_session, seed_database):
         f"Expected detail message: 'Movie updated successfully.', but got: {response_data['detail']}"
     )
 
-    await db_session.rollback()
-
     stmt_check = select(MovieModel).where(MovieModel.id == movie_id)
     result_check = await db_session.execute(stmt_check)
     updated_movie = result_check.scalars().first()
+
+    await db_session.refresh(updated_movie)
 
     assert updated_movie.name == update_data["name"], "Movie name was not updated."
     assert updated_movie.score == update_data["score"], "Movie score was not updated."

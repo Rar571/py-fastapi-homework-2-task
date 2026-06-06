@@ -1,6 +1,6 @@
 services:
-  db:
-    image: 'postgres:latest'
+  postgres_theater:
+    image: 'postgres:16'
     container_name: postgres_theater
     env_file:
       - .env
@@ -26,7 +26,7 @@ services:
     env_file:
       - .env
     depends_on:
-      db:
+      postgres_theater:
         condition: service_healthy
     volumes:
       - pgadmin_theater_data:/var/lib/pgadmin
@@ -45,9 +45,9 @@ services:
       - PYTHONPATH=/usr/src/fastapi
       - WATCHFILES_FORCE_POLLING=true
     ports:
-      - "8000:8000"
+      - "8001:8000"
     depends_on:
-      db:
+      postgres_theater:
         condition: service_healthy
     volumes:
       - ./src:/usr/src/fastapi
@@ -59,7 +59,7 @@ services:
     container_name: alembic_migrator_theater
     command: ["/bin/bash", "/commands/run_migration.sh"]
     depends_on:
-      db:
+      postgres_theater:
         condition: service_healthy
     volumes:
       - ./src:/usr/src/fastapi
